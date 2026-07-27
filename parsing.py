@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Set
 
 
 class Parsing:
@@ -9,6 +9,7 @@ class Parsing:
         self.connections: Dict = {}
         self.start_hub_count: int = 0
         self.end_hub_count: int = 0
+        self.coordinates: Set[Tuple[int, int]] = set()
         self.is_first_line: bool = True
 
     def validate_first_line(self, line: str) -> int:
@@ -93,6 +94,12 @@ class Parsing:
         name: str = config[1]
         x: int = int(config[2])
         y: int = int(config[3])
+        if (x, y) in self.coordinates:
+            raise ValueError(
+                "Error: zone coordinates should be unique\n"
+                f"line {self.line_number}"
+            )
+        self.coordinates.add((x, y))
 
         return name, x, y
 
@@ -123,7 +130,7 @@ class Parsing:
                 converted_value: int = int(value)
             except ValueError:
                 raise ValueError(
-                    f"Error: {converted_value} is not a valid number\n"
+                    f"Error: {value} is not a valid number\n"
                     f"line {self.line_number}"
                 )
             if converted_value < 1:
@@ -153,12 +160,12 @@ class Parsing:
             converted_value = int(value)
         except ValueError:
             raise ValueError(
-                f"Error: {converted_value} is not a valid number\n"
+                f"Error: {value} is not a valid number\n"
                 f"line {self.line_number}"
             )
         if converted_value < 1:
             raise ValueError(
-                f"Error: {converted_value} is not a postive number\n"
+                f"Error: {converted_value} is not a positive number\n"
                 f"line {self.line_number}"
             )
         tags_data[key] = value
@@ -186,13 +193,18 @@ class Parsing:
     def save_zone(
             self, name: str, x: int, y: int,
             tags_data: Dict, prefix: str
-    ):
+    ) -> None:
 
         data: Dict[str, Any] = {"type": prefix, "x": x,
                                 "y": y, "meta_data": tags_data}
         self.zones[name] = data
 
     def validate_connection(self, config: List[str]) -> str:
+        if not config or len(config) != 1:
+            raise ValueError(
+                "Error: invalid connection data\n"
+                f"line {self.line_number}"
+            )
         path: List = config[0].split('-')
         if len(path) != 2:
             raise ValueError(
@@ -201,6 +213,11 @@ class Parsing:
             )
         zone_1: str = path[0]
         zone_2: str = path[1]
+        if zone_1 == zone_2:
+            raise ValueError(
+                "Error: self connections are not allowed\n"
+                f"line {self.line_number}"
+            )
         if zone_1 not in self.zones:
             raise ValueError(
                 f"Error: {zone_1} is not a valid existing zone name\n"
@@ -244,6 +261,11 @@ class Parsing:
                             f"line {self.line_number}"
                         )
                 config: List[str] = line.split()
+                if not config[0].endswith(':'):
+                    raise ValueError(
+                        "Error: invalid prefix does not contain ':'\n"
+                        f"line {self.line_number}"
+                    )
                 prefix: str = config[0].strip(':')
                 if prefix in ["start_hub", "end_hub", "hub"]:
                     name, x, y = self.validate_zone(config)
@@ -265,12 +287,12 @@ class Parsing:
         if self.start_hub_count == 0:
             raise ValueError(
                 "Error: start hub not provided\n"
-                f"line {self.line_number}"
+                "start hub line"
             )
         elif self.end_hub_count == 0:
             raise ValueError(
                 "Error: end hub not provided\n"
-                f"line {self.line_number}"
+                "end hub line"
             )
         elif self.start_hub_count > 1:
             raise ValueError(
@@ -282,19 +304,3 @@ class Parsing:
                 "Error: duplicated end hub\n"
                 f"line {self.line_number}"
             )
-
-
-if __name__ == "__main__":
-    try:
-        parser = Parsing()
-        parser.process_file("maps/easy/03_basic_capacity.txt")
-        print(parser.zones)
-        print(parser.connections)
-    except ValueError as e:
-        print(e)
-    except FileNotFoundError:
-        print("Error: the given file does not exist")
-    except IsADirectoryError:
-        print("Error: the given path is a directory")
-    except PermissionError:
-        print("Error: file does not have the necessary permission")
