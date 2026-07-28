@@ -6,7 +6,7 @@ class Parsing:
         self.nb_drones = 0
         self.line_number: int = 0
         self.zones: Dict = {}
-        self.connections: Dict = {}
+        self.connections: Dict[str, Any] = {}
         self.start_hub_count: int = 0
         self.end_hub_count: int = 0
         self.coordinates: Set[Tuple[int, int]] = set()
@@ -138,7 +138,10 @@ class Parsing:
                     f"Error: {converted_value} is not a positive number\n"
                     f"line {self.line_number}"
                 )
-        tags_data[key] = value
+        if key == "max_drones":
+            tags_data[key] = converted_value
+        else:
+            tags_data[key] = value
 
     def check_zone(self, zone_type: str) -> None:
         if zone_type == "start_hub":
@@ -168,7 +171,7 @@ class Parsing:
                 f"Error: {converted_value} is not a positive number\n"
                 f"line {self.line_number}"
             )
-        tags_data[key] = value
+        tags_data[key] = converted_value
 
     def validate_meta_data(
             self, meta_data: str, type: str
@@ -278,7 +281,12 @@ class Parsing:
                     tags_data = self.validate_meta_data(
                         meta_data, "connection"
                     )
-                    self.connections[src_dst] = tags_data
+                    if not tags_data:
+                        self.connections[src_dst] = None
+                    else:
+                        self.connections[src_dst] = tags_data[
+                            "max_link_capacity"
+                        ]
                 else:
                     raise ValueError(
                         f"Error: {prefix} is an invalid zone type\n"
