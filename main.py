@@ -1,6 +1,7 @@
 from parsing import Parsing
 from Graph import Graph, Zone
 from typing import List, Dict, Union
+from Path_finding import Algorithm
 
 
 if __name__ == "__main__":
@@ -13,10 +14,10 @@ if __name__ == "__main__":
         all_zones: List[Zone] = graph.create_zones(zones)
         graph.add_zones(all_zones)
         graph.connect_graph(connections)
-        for zone, zone_object in graph.zones.items():
-            print(f"{zone}: {zone_object.connections}")
-    except ValueError as e:
-        print(e)
+        start_hub = graph.get_start_hub_name()
+        algo = Algorithm(graph.zones[start_hub], graph)
+        path = algo.Dijkstra()
+        print(path)
     except FileNotFoundError:
         print("Error: the given file does not exist")
     except IsADirectoryError:

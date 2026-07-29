@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 
 
 class Connection:
@@ -35,11 +35,23 @@ class Zone:
         self.max_drones: int = max_drones
         self.connections: List[Connection] = []
 
+    def __lt__(self, other: "Zone") -> bool:
+        return self.name < other.name
+
     def add_connection(self, dst: "Zone", capacity: int) -> None:
         connection: Connection = Connection(
             self, dst, capacity
         )
         self.connections.append(connection)
+
+    def get_neighbors_names(self) -> List[Tuple[int, str]]:
+        neighbors_names: List[Tuple[int, str]] = []
+        for connection in self.connections:
+            if connection.weight != -1:
+                name: str = connection.dst.name
+                wight: int = connection.weight
+                neighbors_names.append((wight, name))
+        return neighbors_names
 
 
 class Graph:
@@ -76,6 +88,16 @@ class Graph:
             all_zones.append(zone)
         return all_zones
 
+    def get_start_hub_name(self) -> str:
+        for name, object in self.zones.items():
+            if object.kind == "start_hub":
+                return name
+
+    def get_end_hub_name(self) -> str:
+        for name, object in self.zones.items():
+            if object.kind == "end_hub":
+                return name
+
     def connect_graph(self, connections: Dict[str, Union[None, int]]) -> None:
         for connection, capacity in connections.items():
             src, dst = connection.split('-')
@@ -87,3 +109,12 @@ class Graph:
             else:
                 src_zone.add_connection(dst_zone, 1)
                 dst_zone.add_connection(src_zone, 1)
+
+    def get_neighbors_object(self, neighbors_names: List[Tuple[int, str]]) -> List[Tuple[int, Zone]]:
+        neighbors_objects: List[Tuple[int, Zone]] = []
+        if not neighbors_names:
+            return None
+        for weight, name in neighbors_names:
+            neighbor_object: Zone = self.zones[name]
+            neighbors_objects.append((weight, neighbor_object))
+        return neighbors_objects
