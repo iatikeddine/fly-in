@@ -10,6 +10,7 @@ class Connection:
         self.dst: "Zone" = dst
         self.capacity: int = capacity
         self.weight: int = self.get_weight()
+        self.current_stat: int = 0
 
     def get_weight(self) -> int:
         if self.dst.zone_type == "normal":
@@ -36,6 +37,7 @@ class Zone:
         self.color: Union[None, str] = color
         self.max_drones: int = max_drones
         self.connections: List[Connection] = []
+        self.current_size: int = 0
 
     def __lt__(self, other: "Zone") -> bool:
         return self.name < other.name
@@ -45,6 +47,11 @@ class Zone:
             self, dst, capacity
         )
         self.connections.append(connection)
+
+    def get_connection(self, next: "Zone") -> Connection:
+        for connection in self.connections:
+            if connection.dst is next:
+                return connection
 
     def get_neighbors_names(self) -> List[Tuple[int, str]]:
         neighbors_names: List[Tuple[int, str]] = []
