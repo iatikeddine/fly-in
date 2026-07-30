@@ -12,10 +12,12 @@ class Connection:
         self.weight: int = self.get_weight()
 
     def get_weight(self) -> int:
-        if self.dst.zone_type in ["normal", "priority"]:
-            return 1
+        if self.dst.zone_type == "normal":
+            return 100
+        elif self.dst.zone_type == "priority":
+            return 199
         elif self.dst.zone_type == "restricted":
-            return 2
+            return 200
         return -1
 
 
@@ -92,11 +94,13 @@ class Graph:
         for name, object in self.zones.items():
             if object.kind == "start_hub":
                 return name
+        return ""
 
     def get_end_hub_name(self) -> str:
         for name, object in self.zones.items():
             if object.kind == "end_hub":
                 return name
+        return ""
 
     def connect_graph(self, connections: Dict[str, Union[None, int]]) -> None:
         for connection, capacity in connections.items():
@@ -110,7 +114,10 @@ class Graph:
                 src_zone.add_connection(dst_zone, 1)
                 dst_zone.add_connection(src_zone, 1)
 
-    def get_neighbors_object(self, neighbors_names: List[Tuple[int, str]]) -> List[Tuple[int, Zone]]:
+    def get_neighbors_object(
+            self,
+            neighbors_names: List
+    ) -> List | None:
         neighbors_objects: List[Tuple[int, Zone]] = []
         if not neighbors_names:
             return None
