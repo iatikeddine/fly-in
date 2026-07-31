@@ -8,7 +8,7 @@ from Simulation import Simulation
 if __name__ == "__main__":
     try:
         parser = Parsing()
-        parser.process_file("map.txt")
+        parser.process_file("maps/medium/03_priority_puzzle.txt")
         zones: Dict = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()

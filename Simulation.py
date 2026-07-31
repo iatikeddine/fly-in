@@ -68,6 +68,7 @@ class Simulation:
             if i == places_available_in_zone:
                 break
             drone.move_to_zone(to_zone)
+            print(f"D{drone.id}-{to_zone.name} ", end="")
             i += 1
 
     def moves_drones_in_zone(
@@ -76,7 +77,8 @@ class Simulation:
     ) -> str | None:
         drones_in_zone: List[Drone] = self.fetch_drones_in_zone(current_zone)
         if connection.weight == 200:
-            places_available: int = self.check_connection_status(connection)
+            places_available: int = self.check_connection_status(
+                current_zone, next_zone)
             if places_available == 0:
                 return None
             else:
@@ -85,6 +87,7 @@ class Simulation:
                     if i == places_available:
                         break
                     drone.move_to_connection(connection)
+                    print(f"D{drone.id}-{connection.src.name}", end="")
                     i += 1
         else:
             places_available: int = self.check_zone_status(next_zone)
@@ -95,6 +98,7 @@ class Simulation:
                 if i == places_available:
                     break
                 drone.move_to_zone(next_zone)
+                print(f"D{drone.id}-{next_zone.name} ", end="")
                 i += 1
 
     def start_simulation(self) -> None:
@@ -113,3 +117,4 @@ class Simulation:
                     connection: Connection = current.get_connection(next_zone)
                     self.move_drones_in_connection(connection, next_zone)
                     self.moves_drones_in_zone(current, next_zone, connection)
+            print()
