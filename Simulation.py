@@ -14,8 +14,8 @@ class Simulation:
         for x in range(self.nb_drones):
             self.drones.append(Drone(x, self.graph))
 
-    def check_connection_status(self, current: Zone, next: Zone) -> int:
-        connection: Connection = current.get_connection(next)
+    def check_connection_status(self, current: Zone, next_zone: Zone) -> int:
+        connection: Connection = current.get_connection(next_zone)
         if connection.current_stat < connection.capacity:
             return connection.capacity - connection.current_stat
         return 0
@@ -108,7 +108,6 @@ class Simulation:
                 current: Zone = object_path[x]
                 if current is not object_path[-1]:
                     next_zone: Zone = object_path[x + 1]
-                    connection: Connection = current.get_connection(next)
+                    connection: Connection = current.get_connection(next_zone)
                     self.move_drones_in_connection(connection, next_zone)
                     self.moves_drones_in_zone(current, next_zone, connection)
-                    print("loool")
