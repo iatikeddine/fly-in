@@ -2,6 +2,7 @@ from parsing import Parsing
 from Graph import Graph, Zone
 from typing import List, Dict, Union
 from Path_finding import Algorithm
+from Simulation import Simulation
 
 
 if __name__ == "__main__":
@@ -17,7 +18,9 @@ if __name__ == "__main__":
         start_hub = graph.get_start_hub_name()
         algo = Algorithm(graph.zones[start_hub], graph)
         path = algo.Dijkstra()
-        print(path)
+        sim = Simulation(graph, path, parser.nb_drones)
+        sim.init_drones()
+        sim.start_simulation()
     except FileNotFoundError:
         print("Error: the given file does not exist")
     except IsADirectoryError:
