@@ -108,6 +108,7 @@ class Simulation:
             self.graph.zones[name]
             for name in self.path
         ]
+        turns: int = 0
         while end_hub_zone.current_size != self.nb_drones:
             turn: int = len(object_path)
             for x in reversed(range(turn)):
@@ -117,4 +118,6 @@ class Simulation:
                     connection: Connection = current.get_connection(next_zone)
                     self.move_drones_in_connection(connection, next_zone)
                     self.moves_drones_in_zone(current, next_zone, connection)
+            turns += 1
             print()
+        print(turns)
