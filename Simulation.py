@@ -16,11 +16,13 @@ class Simulation:
 
     def check_connection_status(self, current: Zone, next_zone: Zone) -> int:
         connection: Connection = current.get_connection(next_zone)
-        if connection.current_stat < connection.capacity:
-            return connection.capacity - connection.current_stat
+        if connection.current_size < connection.capacity:
+            return connection.capacity - connection.current_size
         return 0
 
     def check_zone_status(self, zone: Zone) -> int:
+        if zone.kind == "end_hub":
+            return self.nb_drones
         if zone.current_size < zone.max_drones:
             return zone.max_drones - zone.current_size
         return 0
@@ -42,7 +44,7 @@ class Simulation:
                 and drone.been_in_connection
             ):
                 drones_in_connection.append(drone)
-        for drone in self.drone:
+        for drone in self.drones:
             if (
                 drone.current_position is connection
                 and not drone.been_in_connection
@@ -53,10 +55,10 @@ class Simulation:
     def move_drones_in_connection(
             self, connection: Connection,
             to_zone: Zone
-    ) -> None:
+    ) -> str | None:
         if connection.weight != 200:
             return None
-        if connection.current_stat == 0:
+        if connection.current_size == 0:
             return None
         drones_in_connection: List[Drone] = self.fetch_drones_in_connection(
             connection)
@@ -71,7 +73,7 @@ class Simulation:
     def moves_drones_in_zone(
             self, current_zone: Zone,
             next_zone: Zone, connection: Connection
-    ) -> None:
+    ) -> str | None:
         drones_in_zone: List[Drone] = self.fetch_drones_in_zone(current_zone)
         if connection.weight == 200:
             places_available: int = self.check_connection_status(connection)
@@ -104,7 +106,7 @@ class Simulation:
         ]
         while end_hub_zone.current_size != self.nb_drones:
             turn: int = len(object_path)
-            for x in range(turn):
+            for x in reversed(range(turn)):
                 current: Zone = object_path[x]
                 if current is not object_path[-1]:
                     next_zone: Zone = object_path[x + 1]

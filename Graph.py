@@ -10,7 +10,7 @@ class Connection:
         self.dst: "Zone" = dst
         self.capacity: int = capacity
         self.weight: int = self.get_weight()
-        self.current_stat: int = 0
+        self.current_size: int = 0
 
     def get_weight(self) -> int:
         if self.dst.zone_type == "normal":
