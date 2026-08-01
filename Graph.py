@@ -49,9 +49,11 @@ class Zone:
         self.connections.append(connection)
 
     def get_connection(self, next_zone: "Zone") -> Connection:
+        target_connection: Connection
         for connection in self.connections:
             if connection.dst is next_zone:
-                return connection
+                target_connection = connection
+        return target_connection
 
     def get_neighbors_names(self) -> List[Tuple[int, str]]:
         neighbors_names: List[Tuple[int, str]] = []

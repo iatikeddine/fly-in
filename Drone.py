@@ -11,7 +11,7 @@ class Drone:
         self.been_in_connection: bool = False
         self.current_position.current_size += 1
 
-    def move_to_zone(self, destination: Zone):
+    def move_to_zone(self, destination: Zone) -> None:
         self.current_position.current_size -= 1
         self.current_position = destination
         self.current_position.current_size += 1

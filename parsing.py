@@ -1,12 +1,12 @@
-from typing import List, Dict, Any, Tuple, Set
+from typing import List, Dict, Any, Tuple, Set, Union
 
 
 class Parsing:
     def __init__(self) -> None:
-        self.nb_drones = 0
+        self.nb_drones: int = 0
         self.line_number: int = 0
-        self.zones: Dict = {}
-        self.connections: Dict[str, Any] = {}
+        self.zones: Dict[str, Dict[str, Any]] = {}
+        self.connections: Dict[str, Union[int, None]] = {}
         self.start_hub_count: int = 0
         self.end_hub_count: int = 0
         self.coordinates: Set[Tuple[int, int]] = set()
@@ -152,15 +152,15 @@ class Parsing:
     def validate_connection_tag(
             self, tag: List[str], tags_data: Dict
     ) -> None:
-        key = tag[0]
-        value = tag[1]
+        key: str = tag[0]
+        value: str = tag[1]
         if key != "max_link_capacity":
             raise ValueError(
                 f"Error: {key} is not a valid metadata for connection\n"
                 f"line {self.line_number}"
             )
         try:
-            converted_value = int(value)
+            converted_value: int = int(value)
         except ValueError:
             raise ValueError(
                 f"Error: {value} is not a valid number\n"
@@ -208,7 +208,7 @@ class Parsing:
                 "Error: invalid connection data\n"
                 f"line {self.line_number}"
             )
-        path: List = config[0].split('-')
+        path: List[str] = config[0].split('-')
         if len(path) != 2:
             raise ValueError(
                 "Error: invalid connection pair format 'zoneA-zoneB'\n"
