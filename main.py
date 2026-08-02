@@ -8,7 +8,7 @@ from Simulation import Simulation
 if __name__ == "__main__":
     try:
         parser = Parsing()
-        parser.process_file("maps/hard/03_ultimate_challenge.txt")
+        parser.process_file("maps/challenger/01_the_impossible_dream.txt")
         zones: Dict = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()
@@ -17,10 +17,11 @@ if __name__ == "__main__":
         graph.connect_graph(connections)
         start_hub = graph.get_start_hub_name()
         algo = Algorithm(graph.zones[start_hub], graph)
-        path = algo.Dijkstra()
-        # second_path = algo.second_shortest_path(path)
-        print(path)
-        sim = Simulation(graph, path, parser.nb_drones)
+        first_path = algo.Dijkstra()
+        second_path = algo.second_shortest_path(first_path)
+        print(first_path)
+        print(second_path)
+        sim = Simulation(graph, first_path, second_path, parser.nb_drones)
         sim.init_drones()
         sim.start_simulation()
     except FileNotFoundError:
