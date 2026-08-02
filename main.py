@@ -8,7 +8,7 @@ from Simulation import Simulation
 if __name__ == "__main__":
     try:
         parser = Parsing()
-        parser.process_file("maps/challenger/01_the_impossible_dream.txt")
+        parser.process_file("maps/medium/03_priority_puzzle.txt")
         zones: Dict = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()
@@ -18,7 +18,7 @@ if __name__ == "__main__":
         start_hub = graph.get_start_hub_name()
         algo = Algorithm(graph.zones[start_hub], graph)
         path = algo.Dijkstra()
-        second_path = algo.second_shortest_path(path)
+        #second_path = algo.second_shortest_path(path)
         print(path)
         sim = Simulation(graph, path, parser.nb_drones)
         sim.init_drones()

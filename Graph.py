@@ -16,7 +16,7 @@ class Connection:
         if self.dst.zone_type == "normal":
             return 100
         elif self.dst.zone_type == "priority":
-            return 199
+            return 99
         elif self.dst.zone_type == "restricted":
             return 200
         return -1
