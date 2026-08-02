@@ -10,15 +10,6 @@ class Simulation:
         self.nb_drones: int = nb_drones
         self.drones: List[Drone] = []
 
-    def handle_bottleneck(self, object_path: List[Zone]) -> None:
-        for x in range(len(object_path)):
-            current_zone: Zone = object_path[x]
-            if current_zone.zone_type == "restricted":
-                previous_zone: Zone = object_path[x - 1]
-                connection = previous_zone.get_connection(current_zone)
-                if connection.capacity > current_zone.max_drones:
-                    connection.capacity = current_zone.max_drones
-
     def init_drones(self) -> None:
         for x in range(self.nb_drones):
             self.drones.append(Drone(x, self.graph))
@@ -139,7 +130,6 @@ class Simulation:
             self.graph.zones[name]
             for name in self.path
         ]
-        self.handle_bottleneck(object_path)
         turns: int = 0
         while end_hub_zone.current_size != self.nb_drones:
             turn: int = len(object_path)
