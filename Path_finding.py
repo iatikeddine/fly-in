@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict
-from Graph import Zone, Graph
+from Graph import Zone, Graph, Connection
 import heapq
 
 
@@ -40,3 +40,18 @@ class Algorithm:
         path.append(target)
         path.reverse()
         return path
+
+    def second_shortest_path(self, path: List[str]) -> List[str]:
+        second_shortest: List[str] = path
+        while second_shortest == path:
+            for x in range(len(path) - 1):
+                src_name: str = path[x]
+                dst_name: str = path[x + 1]
+
+                src_zone: Zone = self.graph.zones[src_name]
+                dst_zone: Zone = self.graph.zones[dst_name]
+
+                conn: Connection = src_zone.get_connection(dst_zone)
+                conn.weight += 1
+            second_shortest = self.Dijkstra()
+        return second_shortest

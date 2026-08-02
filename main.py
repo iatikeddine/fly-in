@@ -8,7 +8,7 @@ from Simulation import Simulation
 if __name__ == "__main__":
     try:
         parser = Parsing()
-        parser.process_file("maps/hard/03_ultimate_challenge.txt")
+        parser.process_file("maps/challenger/01_the_impossible_dream.txt")
         zones: Dict = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()

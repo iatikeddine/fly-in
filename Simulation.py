@@ -85,9 +85,22 @@ class Simulation:
             next_zone: Zone, connection: Connection
     ) -> None:
         drones_in_zone: List[Drone] = self.fetch_drones_in_zone(current_zone)
+
         if connection.weight == 200:
-            places_available: int = self.check_connection_status(
-                current_zone, next_zone)
+            safe_places_in_dst: int = max(
+                0,
+                next_zone.max_drones -
+                next_zone.current_size -
+                connection.current_size
+            )
+            conn_places_available: int = self.check_connection_status(
+                current_zone,
+                next_zone
+            )
+            places_available: int = min(
+                safe_places_in_dst,
+                conn_places_available
+            )
             if places_available == 0:
                 return None
             else:
@@ -100,7 +113,15 @@ class Simulation:
                           f"{connection.dst.name} ", end="")
                     i += 1
         else:
-            places_available = self.check_zone_status(next_zone)
+            zone_places_available: int = self.check_zone_status(next_zone)
+            conn_places_available = self.check_connection_status(
+                current_zone,
+                next_zone
+            )
+            places_available = min(
+                zone_places_available,
+                conn_places_available
+            )
             if places_available == 0:
                 return None
             i = 0
