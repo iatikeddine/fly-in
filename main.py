@@ -18,6 +18,7 @@ if __name__ == "__main__":
         start_hub = graph.get_start_hub_name()
         algo = Algorithm(graph.zones[start_hub], graph)
         path = algo.Dijkstra()
+        second_path = algo.second_shortest_path(path)
         print(path)
         sim = Simulation(graph, path, parser.nb_drones)
         sim.init_drones()

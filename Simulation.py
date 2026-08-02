@@ -65,7 +65,7 @@ class Simulation:
             self, connection: Connection,
             to_zone: Zone
     ) -> None:
-        if connection.weight != 200:
+        if to_zone.zone_type != "restricted":
             return None
         if connection.current_size == 0:
             return None
@@ -86,7 +86,7 @@ class Simulation:
     ) -> None:
         drones_in_zone: List[Drone] = self.fetch_drones_in_zone(current_zone)
 
-        if connection.weight == 200:
+        if next_zone.zone_type == "restricted":
             safe_places_in_dst: int = max(
                 0,
                 next_zone.max_drones -
