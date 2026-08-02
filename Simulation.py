@@ -1,6 +1,7 @@
 from typing import List
 from Graph import Graph, Zone, Connection
 from Drone import Drone
+from printer import ColoredPrint
 
 
 class Simulation:
@@ -9,13 +10,15 @@ class Simulation:
             graph: Graph,
             path_1: List[str],
             path_2: List[str],
-            nb_drones: int
+            nb_drones: int,
+            printer: ColoredPrint
     ) -> None:
         self.graph: Graph = graph
         self.path_1: List[Zone] = [graph.zones[name] for name in path_1]
         self.path_2: List[str] = [graph.zones[name] for name in path_2]
         self.nb_drones: int = nb_drones
         self.drones: List[Drone] = []
+        self.printer = printer
 
     def init_drones(self) -> None:
         for x in range(self.nb_drones):
@@ -92,7 +95,10 @@ class Simulation:
             if i == places_available_in_zone:
                 break
             drone.move_to_zone(to_zone)
-            print(f"D{drone.id}-{to_zone.name} ", end="")
+            self.printer.print_log(
+                f"D{drone.id}-{to_zone.name} ",
+                to_zone.color
+            )
             i += 1
 
     def moves_drones_in_zone(
@@ -146,7 +152,10 @@ class Simulation:
                 if i == places_available:
                     break
                 drone.move_to_zone(next_zone)
-                print(f"D{drone.id}-{next_zone.name} ", end="")
+                self.printer.print_log(
+                    f"D{drone.id}-{next_zone.name} ",
+                    next_zone.color
+                )
                 i += 1
 
     def start_simulation(self) -> None:

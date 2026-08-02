@@ -3,6 +3,7 @@ from Graph import Graph, Zone
 from typing import List, Dict, Union
 from Path_finding import Algorithm
 from Simulation import Simulation
+from printer import ColoredPrint
 
 
 if __name__ == "__main__":
@@ -21,7 +22,8 @@ if __name__ == "__main__":
         second_path = algo.second_shortest_path(first_path)
         print(first_path)
         print(second_path)
-        sim = Simulation(graph, first_path, second_path, parser.nb_drones)
+        printer: ColoredPrint = ColoredPrint()
+        sim = Simulation(graph, first_path, second_path, parser.nb_drones, printer)
         sim.init_drones()
         sim.start_simulation()
     except FileNotFoundError:
