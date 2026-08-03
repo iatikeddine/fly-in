@@ -1,33 +1,36 @@
 from Parsing import Parsing
 from Graph import Graph, Zone
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Any
 from Path import Algorithm
 from Simulation import Simulation
 from Printer import ColoredPrint
+import sys
 
 
 if __name__ == "__main__":
     try:
-        parser = Parsing()
+        parser: Parsing = Parsing()
         parser.process_file("maps/medium/02_circular_loop.txt")
-        zones: Dict = parser.zones
+        zones: Dict[str, Dict[str, Any]] = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()
         all_zones: List[Zone] = graph.create_zones(zones)
         graph.add_zones(all_zones)
         graph.connect_graph(connections)
-        start_hub = graph.get_start_hub_name()
-        algo = Algorithm(graph.zones[start_hub], graph)
-        first_path = algo.Dijkstra()
-        second_path = first_path
+        start_hub: str = graph.get_start_hub_name()
+        algo: Algorithm = Algorithm(graph.zones[start_hub], graph)
+        first_path: List[str] = algo.Dijkstra()
+        second_path: List[str] = first_path
         printer: ColoredPrint = ColoredPrint()
         sim = Simulation(
             graph, first_path, second_path, parser.nb_drones, printer)
         sim.init_drones()
         sim.start_simulation()
+    except ValueError as e:
+        sys.exit(f"{e}")
     except FileNotFoundError:
-        print("Error: the given file does not exist")
+        sys.exit("Error: the given file does not exist")
     except IsADirectoryError:
-        print("Error: the given path is a directory")
+        sys.exit("Error: the given path is a directory")
     except PermissionError:
-        print("Error: file does not have the necessary permission")
+        sys.exit("Error: file does not have the necessary permission")
