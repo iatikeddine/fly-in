@@ -171,25 +171,26 @@ class Simulation:
                 first_path, second_path = self.path_2, self.path_1
 
             for step in range(max_lenght):
-                idx1 = len(first_path) - 1 - step
-                if idx1 >= 0 and idx1 < len(first_path) - 1:
-                    current = first_path[idx1]
-                    next_zone = first_path[idx1 + 1]
+                i1: int = len(first_path) - 1 - step
+                if i1 >= 0 and i1 < len(first_path) - 1:
+                    current = first_path[i1]
+                    next_zone = first_path[i1 + 1]
                     connection = current.get_connection(next_zone)
                     self.move_drones_in_connection(
                         connection, next_zone, first_path)
                     self.moves_drones_in_zone(
                         current, next_zone, connection, first_path)
 
-                idx2 = len(second_path) - 1 - step
-                if idx2 >= 0 and idx2 < len(second_path) - 1:
-                    current = second_path[idx2]
-                    next_zone = second_path[idx2 + 1]
-                    connection = current.get_connection(next_zone)
-                    self.move_drones_in_connection(
-                        connection, next_zone, second_path)
-                    self.moves_drones_in_zone(
-                        current, next_zone, connection, second_path)
+                if first_path != second_path:
+                    i2 = len(second_path) - 1 - step
+                    if i2 >= 0 and i2 < len(second_path) - 1:
+                        current = second_path[i2]
+                        next_zone = second_path[i2 + 1]
+                        connection = current.get_connection(next_zone)
+                        self.move_drones_in_connection(
+                            connection, next_zone, second_path)
+                        self.moves_drones_in_zone(
+                            current, next_zone, connection, second_path)
             turns += 1
             print()
         print(turns)

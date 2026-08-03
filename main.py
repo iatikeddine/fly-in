@@ -9,7 +9,7 @@ from printer import ColoredPrint
 if __name__ == "__main__":
     try:
         parser = Parsing()
-        parser.process_file("maps/challenger/01_the_impossible_dream.txt")
+        parser.process_file("maps/medium/02_circular_loop.txt")
         zones: Dict = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()
@@ -19,11 +19,12 @@ if __name__ == "__main__":
         start_hub = graph.get_start_hub_name()
         algo = Algorithm(graph.zones[start_hub], graph)
         first_path = algo.Dijkstra()
-        second_path = algo.second_shortest_path(first_path)
+        second_path = first_path
         print(first_path)
         print(second_path)
         printer: ColoredPrint = ColoredPrint()
-        sim = Simulation(graph, first_path, second_path, parser.nb_drones, printer)
+        sim = Simulation(
+            graph, first_path, second_path, parser.nb_drones, printer)
         sim.init_drones()
         sim.start_simulation()
     except FileNotFoundError:

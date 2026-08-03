@@ -43,7 +43,10 @@ class Algorithm:
 
     def second_shortest_path(self, path: List[str]) -> List[str]:
         second_shortest: List[str] = path
+        limit: int = 0
         while second_shortest == path:
+            if limit >= 100:
+                break
             for x in range(len(path) - 1):
                 src_name: str = path[x]
                 dst_name: str = path[x + 1]
@@ -54,4 +57,6 @@ class Algorithm:
                 conn: Connection = src_zone.get_connection(dst_zone)
                 conn.weight += 1
             second_shortest = self.Dijkstra()
+            limit += 1
+
         return second_shortest

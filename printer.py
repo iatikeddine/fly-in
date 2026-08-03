@@ -22,7 +22,7 @@ class ColoredPrint:
             "reset": "\033[0m"
         }
 
-    def print_log(self, log: str, color: str) -> None:
+    def print_log(self, log: str, color: str, second_color: str = None) -> None:
         if color in self.colors:
             ansi: str = self.colors[color]
             reset: str = self.colors["reset"]

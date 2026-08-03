@@ -97,19 +97,22 @@ class Graph:
                 color, max_drones
             )
             all_zones.append(zone)
+
         return all_zones
 
     def get_start_hub_name(self) -> str:
         for name, object in self.zones.items():
             if object.kind == "start_hub":
-                return name
-        return ""
+                start_hub_name = name
+
+        return start_hub_name
 
     def get_end_hub_name(self) -> str:
         for name, object in self.zones.items():
             if object.kind == "end_hub":
-                return name
-        return ""
+                end_hub_name: str = name
+
+        return end_hub_name
 
     def connect_graph(self, connections: Dict[str, Union[None, int]]) -> None:
         for connection, capacity in connections.items():
