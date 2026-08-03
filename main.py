@@ -1,9 +1,9 @@
 from Parsing import Parsing
 from Graph import Graph, Zone
 from typing import List, Dict, Union
-from Path_finding import Algorithm
+from Path import Algorithm
 from Simulation import Simulation
-from printer import ColoredPrint
+from Printer import ColoredPrint
 
 
 if __name__ == "__main__":
@@ -20,8 +20,6 @@ if __name__ == "__main__":
         algo = Algorithm(graph.zones[start_hub], graph)
         first_path = algo.Dijkstra()
         second_path = first_path
-        print(first_path)
-        print(second_path)
         printer: ColoredPrint = ColoredPrint()
         sim = Simulation(
             graph, first_path, second_path, parser.nb_drones, printer)

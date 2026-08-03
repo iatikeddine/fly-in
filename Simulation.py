@@ -1,7 +1,7 @@
 from typing import List
 from Graph import Graph, Zone, Connection
 from Drone import Drone
-from printer import ColoredPrint
+from Printer import ColoredPrint
 
 
 class Simulation:
