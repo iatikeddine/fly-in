@@ -1,8 +1,16 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 
 
 class ColoredPrint:
-    def __init__(self):
+    """Print text to the terminal using ANSI color codes.
+
+    Maps the map DSL's named zone colors to ANSI escape sequences and
+    supports a special "rainbow" mode that cycles colors per
+    character, used for the end hub's ``color=rainbow`` styling.
+    """
+
+    def __init__(self) -> None:
+        """Initialize the mapping of color names to ANSI escape codes."""
         self.colors: Dict[str, str] = {
             "green": "\033[38;5;46m",
             "red": "\033[38;5;196m",
@@ -22,7 +30,26 @@ class ColoredPrint:
             "reset": "\033[0m"
         }
 
-    def print_log(self, log: str, color: str, second_color: str = None) -> None:
+    def print_log(
+            self,
+            log: str,
+            color: str,
+            second_color: Union[str, None] = None
+    ) -> None:
+        """Print "log" in the given color, without a trailing newline.
+
+        If "color" is a known named color, the whole string is
+        printed in that color. If "color" is "rainbow", each
+        character is printed in a successive color from a fixed
+        7-color cycle. Otherwise, the string is printed uncolored.
+
+        :param log: The text to print.
+        :param color: A key from "self.colors", or "rainbow" for
+            cycling per-character colors; any other value falls back
+            to plain, uncolored output.
+        :param second_color: Currently unused.
+        """
+
         if color in self.colors:
             ansi: str = self.colors[color]
             reset: str = self.colors["reset"]
