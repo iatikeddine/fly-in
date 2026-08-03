@@ -5,6 +5,14 @@ from printer import ColoredPrint
 
 
 class Simulation:
+    """Runs the turn-by-turn drone simulation over a graph.
+
+    Advances all drones along two candidate paths (processed in
+    alternating order each turn to avoid systematically favoring one
+    path), respecting zone and connection capacity limits, until
+    every drone has reached the end hub.
+    """
+
     def __init__(
             self,
             graph: Graph,
@@ -13,20 +21,45 @@ class Simulation:
             nb_drones: int,
             printer: ColoredPrint
     ) -> None:
+        """Initialize the simulation with its graph, paths, and drones.
+
+        :param graph: The graph the simulation runs over.
+        :param path_1: Zone names forming the first candidate path,
+            from start hub to end hub.
+        :param path_2: Zone names forming the second candidate path,
+            from start hub to end hub.
+        :param nb_drones: The total number of drones to simulate.
+        :param printer: The printer used to log colored drone moves.
+        """
+
         self.graph: Graph = graph
         self.path_1: List[Zone] = [graph.zones[name] for name in path_1]
-        self.path_2: List[str] = [graph.zones[name] for name in path_2]
+        self.path_2: List[Zone] = [graph.zones[name] for name in path_2]
         self.nb_drones: int = nb_drones
         self.drones: List[Drone] = []
-        self.printer = printer
+        self.printer: ColoredPrint = printer
 
     def init_drones(self) -> None:
+        """Create and register all drones at the start hub.
+
+        Instantiates ``self.nb_drones`` Drone objects, each assigned
+        to ``path_1`` or ``path_2`` depending on its id parity.
+        """
+
         for x in range(self.nb_drones):
             self.drones.append(Drone(
                 x, self.graph, self.path_1, self.path_2)
             )
 
     def check_connection_status(self, current: Zone, next_zone: Zone) -> int:
+        """Get the number of free slots on the connection between two zones.
+
+        :param current: The zone the connection originates from.
+        :param next_zone: The zone the connection leads to.
+        :return: The number of additional drones the connection can
+            still hold before reaching its capacity.
+        """
+
         connection: Connection = current.get_connection(next_zone)
         if connection.current_size < connection.capacity:
             return connection.capacity - connection.current_size
@@ -34,6 +67,17 @@ class Simulation:
         return 0
 
     def check_zone_status(self, zone: Zone) -> int:
+        """Get the number of free slots remaining in a zone.
+
+        The end hub is treated as having unlimited capacity, since it
+        is the simulation's final destination for every drone.
+
+        :param zone: The zone to check.
+        :return: ``self.nb_drones`` if ``zone`` is the end hub;
+            otherwise the number of additional drones the zone can
+            still hold before reaching ``max_drones``.
+        """
+
         if zone.kind == "end_hub":
             return self.nb_drones
         if zone.current_size < zone.max_drones:
@@ -45,8 +89,17 @@ class Simulation:
             self,
             zone: Zone,
             current_path: List[Zone]
-    ) -> List:
-        drones_in_zone: List = []
+    ) -> List[Drone]:
+        """List all drones currently resting in a zone on a given path.
+
+        :param zone: The zone to search.
+        :param current_path: The path a drone must be assigned to in
+            order to be included.
+        :return: The drones whose current position is ``zone`` and
+            whose assigned path is ``current_path``.
+        """
+
+        drones_in_zone: List[Drone] = []
         for drone in self.drones:
             if drone.current_position is zone and drone.path == current_path:
                 drones_in_zone.append(drone)
@@ -58,6 +111,19 @@ class Simulation:
             connection: Connection,
             curren_path: List[Zone]
     ) -> List[Drone]:
+        """List drones currently in transit on a connection, on a given path.
+
+        Drones that have already spent a turn on the connection (
+        ``been_in_connection`` is ``True``) are listed first, so they
+        are prioritized for the next move over drones that just
+        entered the connection this turn.
+
+        :param connection: The connection to search.
+        :param curren_path: The path a drone must be assigned to in
+            order to be included.
+        :return: The matching drones, already-in-transit ones first.
+        """
+
         drones_in_connection: List[Drone] = []
         for drone in self.drones:
             if (
@@ -82,6 +148,20 @@ class Simulation:
             to_zone: Zone,
             curren_path: List[Zone]
     ) -> None:
+        """Advance drones off a connection and into a restricted zone.
+
+        Only applies when ``to_zone`` is a restricted zone; drones
+        moving into normal or priority zones are handled directly in
+        ``moves_drones_in_zone`` instead. Moves as many waiting
+        drones as there is free space in ``to_zone``, logging each
+        move.
+
+        :param connection: The connection the drones are currently on.
+        :param to_zone: The destination zone.
+        :param curren_path: The path whose drones on ``connection``
+            should be considered.
+        """
+
         if to_zone.zone_type != "restricted":
             return None
         if connection.current_size == 0:
@@ -106,6 +186,25 @@ class Simulation:
             next_zone: Zone, connection: Connection,
             current_path: List[Zone]
     ) -> None:
+        """Advance drones out of a zone, toward or into the next zone.
+
+        If ``next_zone`` is restricted, drones are moved onto the
+        connecting Connection instead of directly into the zone (
+        actual entry into a restricted zone happens later, via
+        ``move_drones_in_connection``), and the number moved is
+        limited by both the connection's free space and the zone's
+        remaining safe capacity net of drones already inbound.
+        Otherwise, drones are moved directly into ``next_zone``,
+        limited by the zone's and connection's free space.
+
+        :param current_zone: The zone drones are currently resting in.
+        :param next_zone: The zone drones are advancing toward.
+        :param connection: The connection between ``current_zone`` and
+            ``next_zone``.
+        :param current_path: The path whose drones in ``current_zone``
+            should be considered.
+        """
+
         drones_in_zone: List[Drone] = self.fetch_drones_in_zone(
             current_zone, current_path)
 
@@ -159,6 +258,15 @@ class Simulation:
                 i += 1
 
     def start_simulation(self) -> None:
+        """Run the simulation until every drone reaches the end hub.
+
+        Each turn, walks both paths from end to start (so drones
+        closer to the goal move before the ones behind them, avoiding
+        self-blocking), alternating which path is processed first
+        every other turn for fairness between the two paths. Prints
+        the total number of turns once all drones have arrived.
+        """
+
         end_hub_name: str = self.graph.get_end_hub_name()
         end_hub_zone: Zone = self.graph.zones[end_hub_name]
         turns: int = 0

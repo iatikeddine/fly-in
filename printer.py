@@ -33,7 +33,7 @@ class ColoredPrint:
     def print_log(
             self,
             log: str,
-            color: str,
+            color: Union[str, None],
             second_color: Union[str, None] = None
     ) -> None:
         """Print "log" in the given color, without a trailing newline.

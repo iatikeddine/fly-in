@@ -1,4 +1,4 @@
-from parsing import Parsing
+from Parsing import Parsing
 from Graph import Graph, Zone
 from typing import List, Dict, Union
 from Path_finding import Algorithm
