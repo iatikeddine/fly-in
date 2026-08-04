@@ -1,7 +1,6 @@
 .PHONY: install run debug clean lint
 
 VENV = .venv
-ARG = maps/medium/02_circular_loop.txt
 
 install: $(VENV)
 
