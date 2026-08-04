@@ -49,14 +49,15 @@ class ColoredPrint:
             to plain, uncolored output.
         :param second_color: Currently unused.
         """
-
         if second_color:
             id, zone_1, zone_2 = log.split('-')
-            if color is None:
+            if color not in self.colors:
                 color_1: str = ""
             else:
                 color_1 = self.colors[color]
-            color_2: str = self.colors[second_color]
+            if second_color not in self.colors:
+                color_2: str = self.colors[second_color]
+            color_2 = self.colors[second_color]
             reset: str = self.colors["reset"]
             print(f"{id}-{color_1}{zone_1}{reset}-{color_2}{zone_2}{reset}",
                   end="")

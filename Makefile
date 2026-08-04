@@ -1,7 +1,7 @@
 .PHONY: install run debug clean lint
 
 VENV = .venv
-ARG = maps/challenger/01_the_impossible_dream.txt
+ARG = maps/hard/03_ultimate_challenge.txt
 
 install: $(VENV)
 

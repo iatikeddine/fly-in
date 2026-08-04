@@ -231,8 +231,10 @@ class Simulation:
                     if i == places_available:
                         break
                     drone.move_to_connection(connection)
-                    print(f"D{drone.id}-{connection.src.name}-"
-                          f"{connection.dst.name} ", end="")
+                    self.printer.print_log(
+                        f"D{drone.id}-{connection.src.name}-"
+                        f"{connection.dst.name} ",
+                        current_zone.color, next_zone.color)
                     i += 1
         else:
             zone_places_available: int = self.check_zone_status(next_zone)
