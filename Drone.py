@@ -52,7 +52,10 @@ class Drone:
 
         :param destination: The zone the drone is moving into.
         """
-
+        if isinstance(self.current_position, Connection):
+            reverse_connection: Connection = destination.get_connection(
+                self.current_position.src)
+            reverse_connection.current_size -= 1
         self.current_position.current_size -= 1
         self.current_position = destination
         self.current_position.current_size += 1
@@ -71,6 +74,9 @@ class Drone:
         connection.current_size += 1
         self.been_in_connection = True
         self.current_position = connection
+        reverse_connection: Connection = connection.dst.get_connection(
+            connection.src)
+        reverse_connection.current_size += 1
 
     def assign_path(self) -> None:
         """Assign this drone's path based on the parity of its id.
