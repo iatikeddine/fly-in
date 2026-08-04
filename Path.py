@@ -92,7 +92,9 @@ class Algorithm:
                 dst_zone: Zone = self.graph.zones[dst_name]
 
                 conn: Connection = src_zone.get_connection(dst_zone)
+                rev_conn: Connection = dst_zone.get_connection(src_zone)
                 conn.weight += 1
+                rev_conn.weight += 1
             second_shortest = self.Dijkstra()
             limit += 1
 
