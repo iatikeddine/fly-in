@@ -1,6 +1,7 @@
 .PHONY: install run debug clean lint
 
 VENV = .venv
+ARG = maps/challenger/01_the_impossible_dream.txt
 
 install: $(VENV)
 
@@ -8,10 +9,10 @@ $(VENV): pyproject.toml
 	uv sync
 
 run: $(VENV)
-	uv run main.py $(ARGS)
+	uv run main.py $(ARG)
 
 debug: $(VENV)
-	uv run -m pdb main.py $(ARGS)
+	uv run -m pdb main.py $(ARG)
 
 clean:
 	rm -rf __pycache__

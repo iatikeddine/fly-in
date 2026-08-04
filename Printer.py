@@ -50,11 +50,23 @@ class ColoredPrint:
         :param second_color: Currently unused.
         """
 
-        if color in self.colors:
-            ansi: str = self.colors[color]
+        if second_color:
+            id, zone_1, zone_2 = log.split('-')
+            if color is None:
+                color_1: str = ""
+            else:
+                color_1 = self.colors[color]
+            color_2: str = self.colors[second_color]
             reset: str = self.colors["reset"]
-            print(f"{ansi}{log}{reset}", end="")
+            print(f"{id}-{color_1}{zone_1}{reset}-{color_2}{zone_2}{reset}",
+                  end="")
+        elif color in self.colors:
+            id, msg = log.split('-')
+            ansi: str = self.colors[color]
+            reset = self.colors["reset"]
+            print(f"{id}-{ansi}{msg}{reset}", end="")
         elif color == "rainbow":
+            id, msg = log.split('-')
             rainbow_colors: List[str] = [
                 "\033[38;5;196m",
                 "\033[38;5;208m",
@@ -65,7 +77,8 @@ class ColoredPrint:
                 "\033[38;5;135m"
             ]
             i: int = 0
-            for c in log:
+            print(f"{id}-", end="")
+            for c in msg:
                 if i == 7:
                     i = 0
                 print(f"{rainbow_colors[i]}{c}", end="")

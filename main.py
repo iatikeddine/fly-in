@@ -4,13 +4,17 @@ from typing import List, Dict, Union, Any
 from Path import Algorithm
 from Simulation import Simulation
 from Printer import ColoredPrint
+from argparse import ArgumentParser
 import sys
 
 
 if __name__ == "__main__":
     try:
+        arg_parser: ArgumentParser = ArgumentParser()
+        arg_parser.add_argument("path")
+        arg = arg_parser.parse_args()
         parser: Parsing = Parsing()
-        parser.process_file("maps/medium/02_circular_loop.txt")
+        parser.process_file(arg.path)
         zones: Dict[str, Dict[str, Any]] = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()
@@ -20,7 +24,7 @@ if __name__ == "__main__":
         start_hub: str = graph.get_start_hub_name()
         algo: Algorithm = Algorithm(graph.zones[start_hub], graph)
         first_path: List[str] = algo.Dijkstra()
-        second_path: List[str] = first_path
+        second_path: List[str] = algo.second_shortest_path(first_path)
         printer: ColoredPrint = ColoredPrint()
         sim = Simulation(
             graph, first_path, second_path, parser.nb_drones, printer)
