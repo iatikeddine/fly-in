@@ -34,7 +34,7 @@ class ColoredPrint:
             self,
             log: str,
             color: Union[str, None],
-            second_color: Union[str, None] = None
+            second_color: Union[str, None] = "not_provided"
     ) -> None:
         """Print "log" in the given color, without a trailing newline.
 
@@ -49,15 +49,16 @@ class ColoredPrint:
             to plain, uncolored output.
         :param second_color: Currently unused.
         """
-        if second_color:
+        if second_color != "not_provided":
             id, zone_1, zone_2 = log.split('-')
             if color not in self.colors:
                 color_1: str = ""
             else:
                 color_1 = self.colors[color]
             if second_color not in self.colors:
-                color_2: str = self.colors[second_color]
-            color_2 = self.colors[second_color]
+                color_2: str = ""
+            else:
+                color_2 = self.colors[second_color]
             reset: str = self.colors["reset"]
             print(f"{id}-{color_1}{zone_1}{reset}-{color_2}{zone_2}{reset}",
                   end="")
