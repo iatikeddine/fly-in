@@ -37,7 +37,7 @@ class Parsing:
 
         if ':' not in line:
             raise ValueError(
-                f"Error: line does not contain ':'\n"
+                f"Error: ivalid first line format\n"
                 f"line {self.line_number} "
             )
 
@@ -74,13 +74,30 @@ class Parsing:
         :return: The content of the meta data, or an empty string
             if the line has no metadata block.
         """
+        reved_line: str = line[::-1]
+        if not reved_line.startswith(']'):
+            return ""
+        if '[' not in reved_line:
+            return ""
+        to_extract: str = ""
+        for c in reved_line:
+            if c == '[':
+                to_extract += '['
+                break
+            to_extract += c
+        dups_check: int = len(line.split(to_extract[::-1]))
+        if dups_check > 2:
+            raise ValueError(
+                "Error: duplicated meta data\n"
+                f"line - {self.line_number}"
+            )
+        line = line.replace(to_extract[::-1], "")
+        if not line:
+            return to_extract[::-1]
+        if not line.endswith(' '):
+            return ""
 
-        splited_line: List[str] = line.split('[')
-        if len(splited_line) > 1:
-            to_extract: str = splited_line[len(splited_line) - 1]
-            return to_extract
-
-        return ""
+        return to_extract[::-1]
 
     def validate_name(self, name: str) -> None:
         """Validate that a zone name is well-formed and unique.
@@ -201,6 +218,11 @@ class Parsing:
                     f"Error: {converted_value} is not a positive number\n"
                     f"line {self.line_number}"
                 )
+        if key in tags_data:
+            raise ValueError(
+                "Error: duplicated zone metadata\n"
+                f"line {self.line_number}"
+            )
         if key == "max_drones":
             tags_data[key] = converted_value
         else:
@@ -248,6 +270,11 @@ class Parsing:
         if converted_value < 1:
             raise ValueError(
                 f"Error: {converted_value} is not a positive number\n"
+                f"line {self.line_number}"
+            )
+        if key in tags_data:
+            raise ValueError(
+                "Error: duplicated connection metadata\n"
                 f"line {self.line_number}"
             )
         tags_data[key] = converted_value
@@ -386,12 +413,11 @@ class Parsing:
                     continue
                 meta_data: str = self.extract_meta_data(line)
                 if meta_data:
-                    full_bracket: str = f"[{meta_data}"
-                    line = line.replace(full_bracket, "").strip()
-                    meta_data = meta_data.strip(']')
+                    line = line.replace(meta_data, "").strip()
+                    meta_data = meta_data.strip('[]')
                     if not line:
                         raise ValueError(
-                            f"Error: invalid data\n"
+                            f"Error: line contains only metadata\n"
                             f"line {self.line_number}"
                         )
                 config: List[str] = line.split()
@@ -402,9 +428,6 @@ class Parsing:
                     )
                 prefix: str = config[0].strip(':')
                 if prefix in ["start_hub", "end_hub", "hub"]:
-                    name: str
-                    x: int
-                    y: int
                     name, x, y = self.validate_zone(config)
                     tags_data: Dict[str, Any] = self.validate_meta_data(
                         meta_data, "zone")
@@ -445,4 +468,9 @@ class Parsing:
             raise ValueError(
                 "Error: duplicated end hub\n"
                 f"line {self.line_number}"
+            )
+        if not self.connections:
+            raise ValueError(
+                "Error: there is no connections between zones"
+                "connection line"
             )
