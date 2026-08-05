@@ -303,4 +303,4 @@ class Simulation:
                             current, next_zone, connection, second_path)
             turns += 1
             print()
-        print(turns)
+        print(f"\nTurnes to complete simulation: {turns}")
