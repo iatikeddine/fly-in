@@ -78,7 +78,7 @@ class Simulation:
             still hold before reaching ``max_drones``.
         """
 
-        if zone.kind == "end_hub":
+        if zone.kind == "end_hub" or zone.kind == "end_hub":
             return self.nb_drones
         if zone.current_size < zone.max_drones:
             return zone.max_drones - zone.current_size

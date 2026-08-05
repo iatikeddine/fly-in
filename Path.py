@@ -57,7 +57,10 @@ class Algorithm:
         path: List[str] = []
         currenst_step: str = self.graph.get_end_hub_name()
         if currenst_step not in paths_trace:
-            raise ValueError("Error: end hub is not connected to the Graph")
+            raise ValueError(
+                "Error: end hub is not connected to the Graph\n"
+                "end_hub line"
+            )
         target: str = self.graph.get_start_hub_name()
         while currenst_step != target:
             path.append(currenst_step)
