@@ -85,13 +85,7 @@ class Parsing:
                 to_extract += '['
                 break
             to_extract += c
-        dups_check: int = len(line.split(to_extract[::-1]))
-        if dups_check > 2:
-            raise ValueError(
-                "Error: duplicated meta data\n"
-                f"line - {self.line_number}"
-            )
-        line = line.replace(to_extract[::-1], "")
+        line = line.removesuffix(to_extract[::-1])
         if not line:
             return to_extract[::-1]
         if not line.endswith(' '):
@@ -413,7 +407,7 @@ class Parsing:
                     continue
                 meta_data: str = self.extract_meta_data(line)
                 if meta_data:
-                    line = line.replace(meta_data, "").strip()
+                    line = line.removesuffix(meta_data).strip()
                     meta_data = meta_data.strip('[]')
                     if not line:
                         raise ValueError(
@@ -462,12 +456,12 @@ class Parsing:
         elif self.start_hub_count > 1:
             raise ValueError(
                 "Error: duplicated start hub\n"
-                f"line {self.line_number}"
+                "start hub line"
             )
         elif self.end_hub_count > 1:
             raise ValueError(
                 "Error: duplicated end hub\n"
-                f"line {self.line_number}"
+                "end hub line"
             )
         if not self.connections:
             raise ValueError(
