@@ -161,7 +161,10 @@ class Graph:
             self.zones[zone.name] = zone
 
     @staticmethod
-    def create_zones(zones: Dict[str, Dict[str, Any]]) -> List[Zone]:
+    def create_zones(
+        zones: Dict[str, Dict[str, Any]],
+        nb_drones: int
+    ) -> List[Zone]:
         """Build Zone objects from parsed zone data.
 
         Reads each zone's type, coordinates, and metadata, applying
@@ -181,7 +184,9 @@ class Graph:
             y: int = zone_data["y"]
             zone_type: str = "normal"
             color: Union[None, str] = None
-            max_drones: int = 1
+            if kind == "start_hub" or kind == "end_hub":
+                max_drones: int = nb_drones
+            max_drones = 1
             meta_data: Dict[str, Any] = zone_data["meta_data"]
             if meta_data:
                 for tag, value in meta_data.items():

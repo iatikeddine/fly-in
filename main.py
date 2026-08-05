@@ -18,7 +18,7 @@ if __name__ == "__main__":
         zones: Dict[str, Dict[str, Any]] = parser.zones
         connections: Dict[str, Union[None, int]] = parser.connections
         graph: Graph = Graph()
-        all_zones: List[Zone] = graph.create_zones(zones)
+        all_zones: List[Zone] = graph.create_zones(zones, parser.nb_drones)
         graph.add_zones(all_zones)
         graph.connect_graph(connections)
         start_hub: str = graph.get_start_hub_name()
