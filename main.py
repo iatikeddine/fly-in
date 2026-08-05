@@ -40,3 +40,5 @@ if __name__ == "__main__":
         sys.exit("Error: file does not have the necessary permission")
     except KeyboardInterrupt:
         sys.exit("Error: The program stoped unexpectedly")
+    except Exception as e:
+        sys.exit(e)
