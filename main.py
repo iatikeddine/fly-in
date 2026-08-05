@@ -41,4 +41,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         sys.exit("Error: The program stoped unexpectedly")
     except Exception as e:
-        sys.exit(e)
+        sys.exit(f"{e}")
