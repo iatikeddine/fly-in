@@ -37,10 +37,14 @@ class Parsing:
 
         if ':' not in line:
             raise ValueError(
-                f"Error: ivalid first line format\n"
+                f"Error: invalid first line format\n"
                 f"line {self.line_number} "
             )
-
+        if len(line.split()) != 2:
+            raise ValueError(
+                "Error: invalid number of arguments for nb_drones\n"
+                f"{self.line_number}"
+            )
         splited_line: List[str] = line.split(':', maxsplit=1)
         if splited_line[0] != splited_line[0].strip():
             raise ValueError(
@@ -408,7 +412,7 @@ class Parsing:
                 meta_data: str = self.extract_meta_data(line)
                 if meta_data:
                     line = line.removesuffix(meta_data).strip()
-                    meta_data = meta_data.strip('[]')
+                    meta_data = meta_data[1:-1]
                     if not line:
                         raise ValueError(
                             f"Error: line contains only metadata\n"
@@ -420,14 +424,16 @@ class Parsing:
                         "Error: invalid prefix does not contain ':'\n"
                         f"line {self.line_number}"
                     )
-                prefix: str = config[0].strip(':')
-                if prefix in ["start_hub", "end_hub", "hub"]:
+                prefix: str = config[0]
+                if prefix in ["start_hub:", "end_hub:", "hub:"]:
+                    prefix = prefix.strip(':')
                     name, x, y = self.validate_zone(config)
                     tags_data: Dict[str, Any] = self.validate_meta_data(
                         meta_data, "zone")
                     self.check_zone(prefix)
                     self.save_zone(name, x, y, tags_data, prefix)
-                elif prefix == "connection":
+                elif prefix == "connection:":
+                    prefix = prefix.strip(':')
                     src_dst: str = self.validate_connection(config[1:])
                     tags_data = self.validate_meta_data(
                         meta_data, "connection"
@@ -440,7 +446,7 @@ class Parsing:
                         ]
                 else:
                     raise ValueError(
-                        f"Error: {prefix} is an invalid zone type\n"
+                        f"Error: {prefix} is an invalid zone or connection\n"
                         f"line {self.line_number}"
                     )
         if self.start_hub_count == 0:
