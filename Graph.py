@@ -186,7 +186,8 @@ class Graph:
             color: Union[None, str] = None
             if kind == "start_hub" or kind == "end_hub":
                 max_drones: int = nb_drones
-            max_drones = 1
+            else:
+                max_drones = 1
             meta_data: Dict[str, Any] = zone_data["meta_data"]
             if meta_data:
                 for tag, value in meta_data.items():
@@ -194,7 +195,11 @@ class Graph:
                         zone_type = value
                     if tag == "color":
                         color = value
-                    if tag == "max_drones":
+                    if (
+                        tag == "max_drones"
+                        and kind != "end_hub"
+                        and kind != "start_hub"
+                    ):
                         max_drones = value
             zone: Zone = Zone(
                 name, x, y, kind, zone_type,
