@@ -34,7 +34,6 @@ class Algorithm:
         """
 
         queue: List[Tuple[int, Zone]] = [(0, self.start_hub)]
-        heapq.heapify(queue)
         paths_trace: Dict[str, str] = {}
         cost_so_far: Dict[str, int] = {self.start_hub.name: 0}
         while queue:
