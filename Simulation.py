@@ -210,9 +210,9 @@ class Simulation:
 
         if next_zone.zone_type == "restricted":
             traveling_drones: int = sum(
-                1 for d in self.drones
-                if isinstance(d.current_position, Connection)
-                and d.current_position.dst is next_zone
+                1 for drone in self.drones
+                if isinstance(drone.current_position, Connection)
+                and drone.current_position.dst is next_zone
             )
             safe_places_in_dst: int = max(
                 0,
