@@ -209,7 +209,7 @@ class Simulation:
             current_zone, current_path)
 
         if next_zone.zone_type == "restricted":
-            incoming: int = sum(
+            traveling_drones: int = sum(
                 1 for d in self.drones
                 if isinstance(d.current_position, Connection)
                 and d.current_position.dst is next_zone
@@ -218,7 +218,7 @@ class Simulation:
                 0,
                 next_zone.max_drones -
                 next_zone.current_size -
-                incoming
+                traveling_drones
             )
             conn_places_available: int = self.check_connection_status(
                 current_zone,
