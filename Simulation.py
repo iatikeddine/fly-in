@@ -214,8 +214,7 @@ class Simulation:
                 if isinstance(drone.current_position, Connection)
                 and drone.current_position.dst is next_zone
             )
-            safe_places_in_dst: int = max(
-                0,
+            safe_places_in_dst: int = (
                 next_zone.max_drones -
                 next_zone.current_size -
                 traveling_drones
