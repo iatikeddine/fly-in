@@ -84,17 +84,6 @@ class Zone:
         self.connections: List[Connection] = []
         self.current_size: int = 0
 
-    def __lt__(self, other: "Zone") -> bool:
-        """Order zones alphabetically by name.
-
-        Enables zones to be compared
-
-        :param other: The zone to compare against.
-        :return: True if this zone's name sorts before other's.
-        """
-
-        return self.name < other.name
-
     def add_connection(self, dst: "Zone", capacity: int) -> None:
         """Create and register an outgoing connection to ``dst``.
 

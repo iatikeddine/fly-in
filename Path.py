@@ -1,6 +1,5 @@
 from typing import List, Tuple, Dict, Union
 from Graph import Zone, Graph, Connection
-import heapq
 
 
 class Algorithm:
@@ -37,21 +36,19 @@ class Algorithm:
         paths_trace: Dict[str, str] = {}
         cost_so_far: Dict[str, int] = {self.start_hub.name: 0}
         while queue:
-            current_weight, current_zone = heapq.heappop(queue)
+            current_weight, current_zone = queue.pop()
             neighbors_names: List[Tuple[int, str]] = (
                 current_zone.get_neighbors_names())
             neighbors:  Union[List[Tuple[int, Zone]], None] = (
                 self.graph.get_neighbors_object(neighbors_names))
             if not neighbors:
                 continue
-            if current_zone.kind == "end_hub":
-                break
             for weight, neighbor in neighbors:
                 weight += current_weight
                 n_name: str = neighbor.name
                 if n_name not in cost_so_far or weight < cost_so_far[n_name]:
                     cost_so_far[neighbor.name] = weight
-                    heapq.heappush(queue, (weight, neighbor))
+                    queue.append((weight, neighbor))
                     paths_trace[neighbor.name] = current_zone.name
 
         path: List[str] = []
