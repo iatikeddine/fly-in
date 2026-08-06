@@ -471,6 +471,6 @@ class Parsing:
             )
         if not self.connections:
             raise ValueError(
-                "Error: there is no connections between zones"
+                "Error: there is no connections between zones\n"
                 "connection line"
             )
