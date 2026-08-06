@@ -12,7 +12,7 @@ if __name__ == "__main__":
     try:
         arg_parser: ArgumentParser = ArgumentParser()
         arg_parser.add_argument("path")
-        arg = arg_parser.parse_args()
+        arg: Any = arg_parser.parse_args()
         parser: Parsing = Parsing()
         parser.process_file(arg.path)
         zones: Dict[str, Dict[str, Any]] = parser.zones
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         first_path: List[str] = algo.Dijkstra()
         second_path: List[str] = algo.second_shortest_path(first_path)
         printer: ColoredPrint = ColoredPrint()
-        sim = Simulation(
+        sim: Simulation = Simulation(
             graph, first_path, second_path, parser.nb_drones, printer)
         sim.init_drones()
         sim.start_simulation()
