@@ -13,7 +13,7 @@ The core engine of this project relies on a strictly typed, object-oriented appr
 
 2. **Weighted Dijkstra Pathfinding**: 
    The `Algorithm` class utilizes a weighted Dijkstra search (via `heapq`) to find optimal routes. Edge weights are dynamically assigned based on the destination zone type: `priority` zones are cheaper (weight: 99), `normal` zones are standard (weight: 100), `restricted` zones are penalized (weight: 200), and `blocked` zones are completely ignored.
-   To prevent massive traffic jams on a single route, the algorithm iteratively penalizes the edges of the first discovered path to mathematically find a distinct, highly-efficient "second shortest path".
+   To prevent massive traffic jams on a single route, the algorithm iteratively penalizes the edges of the first discovered path to mathematically find a distinct, highly-efficient "second path".
 
 3. **Simulation Engine (The Zipper Loop)**: 
    To maximize throughput across two parallel paths, the `Simulation` class evaluates drone movements *backward* (from the finish line down to the start). This entirely eliminates "self-blocking" traffic jams. Furthermore, the simulation alternates which path receives priority on every single turn—acting as a perfect "zipper merge" for drones sharing bottleneck connections. 
@@ -51,9 +51,10 @@ D1-goal D2-goal
 This project requires **Python 3.10+**. A `Makefile` is provided for automation:
 
 - **`make install`**: Install any required project dependencies.
-- **`make run`**: Execute the main simulation on the provided test map.
-- **`make debug`**: Run the simulation in debug mode.
-- **`make clean`**: Remove temporary files and python caches (e.g., `__pycache__`).
+- **`make run (ARG)`**: Execute the main simulation on the provided test map (ARG).
+- **`make debug (ARG)`**: Run the simulation in debug mode.
+- **`make clean`**: Remove temporary files and python caches (.mypy_cache, `__pycache__`).
+- **`make clean`**: Remove temporary files and python caches (`.mypy_cache`, `__pycache__`).
 - **`make lint`**: Run strict static analysis using `flake8` and `mypy`.
 
 ## Resources
