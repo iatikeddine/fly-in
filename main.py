@@ -23,7 +23,7 @@ if __name__ == "__main__":
         graph.connect_graph(connections)
         start_hub: str = graph.get_start_hub_name()
         algo: Algorithm = Algorithm(graph.zones[start_hub], graph)
-        first_path: List[str] = algo.Dijkstra()
+        first_path: List[str] = algo.path_finder()
         second_path: List[str] = algo.second_shortest_path(first_path)
         printer: ColoredPrint = ColoredPrint()
         sim: Simulation = Simulation(

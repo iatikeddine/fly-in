@@ -20,7 +20,7 @@ class Algorithm:
         self.start_hub: Zone = start_hub
         self.graph: Graph = graph
 
-    def Dijkstra(self) -> List[str]:
+    def path_finder(self) -> List[str]:
         """Find the lowest-weight path from the start hub to the end hub.
 
         Runs a standard Dijkstra search over the graph's connection
@@ -96,7 +96,7 @@ class Algorithm:
                 rev_conn: Connection = dst_zone.get_connection(src_zone)
                 conn.weight += 1
                 rev_conn.weight += 1
-            second_shortest = self.Dijkstra()
+            second_shortest = self.path_finder()
             limit += 1
 
         return second_shortest

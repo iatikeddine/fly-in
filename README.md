@@ -11,8 +11,8 @@ The core engine of this project relies on a strictly typed, object-oriented appr
 1. **Graph Parsing & Representation**: 
    A custom parser reads the map format and generates a network of `Zone` and `Connection` objects. Constraints such as `max_drones` and `max_link_capacity` are mapped directly to instance properties.
 
-2. **Weighted Dijkstra Pathfinding**: 
-   The `Algorithm` class utilizes a weighted Dijkstra search (via `heapq`) to find optimal routes. Edge weights are dynamically assigned based on the destination zone type: `priority` zones are cheaper (weight: 99), `normal` zones are standard (weight: 100), `restricted` zones are penalized (weight: 200), and `blocked` zones are completely ignored.
+2. **Pathfinding**: 
+   The `Algorithm` class utilizes a weighted DFS search to find optimal routes. Edge weights are dynamically assigned based on the destination zone type: `priority` zones are cheaper (weight: 99), `normal` zones are standard (weight: 100), `restricted` zones are penalized (weight: 200), and `blocked` zones are completely ignored.
    To prevent massive traffic jams on a single route, the algorithm iteratively penalizes the edges of the first discovered path to mathematically find a distinct, highly-efficient "second path".
 
 3. **Simulation Engine (The Zipper Loop)**: 
