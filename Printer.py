@@ -27,6 +27,7 @@ class ColoredPrint:
             "cyan": "\033[38;5;51m",
             "lime": "\033[38;5;118m",
             "magenta": "\033[38;5;201m",
+            "violet": "\033[38;5;93m",
             "reset": "\033[0m"
         }
 
