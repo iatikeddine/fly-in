@@ -59,7 +59,6 @@ This project requires **Python 3.10+**. A `Makefile` is provided for automation:
 
 ## Resources
 - [Graph theory (Youtube)] (https://www.youtube.com/watch?v=LFKZLXVO-Dg)
-- [Dijkstra's Algorithm (Youtube)] (https://www.youtube.com/watch?v=GazC3A4OQTE&t=54s)
 
 **AI Usage Statement:**
 AI was utilized  to assist with the formatting and writing of this README file, and to validate static type hints for `mypy` compliance across the codebase.
