@@ -26,6 +26,22 @@ class Parsing:
         self.coordinates: Set[Tuple[int, int]] = set()
         self.is_first_line: bool = True
 
+    def check_if_empty(self, path: str) -> bool:
+        """Check whether a file is empty and raise an error if it is.
+
+        :param path: Path to the file to check.
+        :return: False if the file contains at least one non-empty line.
+        :raises ValueError: If the file is empty or contains only whitespace.
+        """
+        with open(path, "r") as f:
+            for line in f:
+                if line.strip():
+                    return False
+            raise ValueError(
+                "Error: map file is empty\n"
+                "no lines"
+            )
+
     def validate_first_line(self, line: str) -> int:
         """Validate the mandatory ``nb_drones: <value>`` line.
 
@@ -396,7 +412,7 @@ class Parsing:
             ``connection``, or if the start/end hub counts are not
             each exactly one.
         """
-
+        self.check_if_empty(path)
         with open(path, "r") as f:
             for line in f:
                 self.line_number += 1
