@@ -3,7 +3,7 @@ from Graph import Zone, Graph, Connection
 
 
 class Algorithm:
-    """Pathfinding over a Graph using weighted Dijkstra search.
+    """Pathfinding over a Graph using weighted DFS search.
 
     Wraps a single start hub and its graph, and can produce both the
     shortest path to the end hub and a distinct "second shortest"
@@ -23,12 +23,12 @@ class Algorithm:
     def path_finder(self) -> List[str]:
         """Find the lowest-weight path from the start hub to the end hub.
 
-        Runs a standard Dijkstra search over the graph's connection
-        weights, stopping once the end hub is popped off the queue,
+        Runs a standard search over the graph's connection
+        weights, stopping once the queueis empty,
         then reconstructs the path by walking the recorded
         predecessor trace back from the end hub to the start hub.
 
-        :return: The list of zone names forming the shortest path,
+        :return: The list of zone names forming the path,
             ordered from start hub to end hub inclusive.
         """
 
@@ -66,16 +66,16 @@ class Algorithm:
         path.reverse()
         return path
 
-    def second_shortest_path(self, path: List[str]) -> List[str]:
+    def second_path(self, path: List[str]) -> List[str]:
         """Find a path distinct from "path" by penalizing its edges.
 
         Repeatedly increments the weight of every connection used by
-        "path" by 1 and reruns Dijkstra, until the result differs
+        "path" by 1 and reruns path_finder, until the result differs
         from "path" or the retry limit (100 iterations) is reached.
 
         :param path: The reference path (e.g. the current shortest
             path) to diverge away from.
-        :return: A new path from Dijkstra, distinct from "path" if
+        :return: A new path distinct from "path" if
             one was found within the retry limit; otherwise the last
             (still-identical) result.
         """
